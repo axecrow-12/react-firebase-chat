@@ -164,3 +164,13 @@
         }
     }
 }
+.chat.empty{
+    align-items: center;
+    justify-content: center;
+    color: #a5a5a5;
+}
+
+.chat .center .noMessages{
+    margin: auto;
+    color: #a5a5a5;
+}

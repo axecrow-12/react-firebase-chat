@@ -1,15 +1,17 @@
 import { useState, useRef, useEffect } from "react"
 import "./chat.css"
 import EmojiPicker from "emoji-picker-react"
+import { useChatStore } from "../../lib/chatStore"
 
 const Chat = () => {
 const [open,setOpen] = useState(false)
 const [text,setText] = useState("")
 const endRef = useRef(null)
+const { chatId, user } = useChatStore()
 
 useEffect(() => {
   endRef.current?.scrollIntoView({behavior:"smooth"})
-},[]);
+},[chatId]);
 
 
 const handleEmoji = (e) =>{
@@ -17,14 +19,21 @@ const handleEmoji = (e) =>{
   setOpen(false)
 };
 
+  if (!chatId) {
+    return (
+      <div className='chat empty'>
+        <p>Select a chat, or press + to find someone to talk to.</p>
+      </div>
+    )
+  }
+
   return (
     <div className='chat'>
       <div className="top">
         <div className="user">
-          <img src="./avatar.png" alt="" />
+          <img src={user.avatar || "./avatar.png"} alt="" />
           <div className="texts">
-            <span>Jane Doe</span>
-            <p>Lorem ipsum dolor, sit amet.</p>
+            <span>{user.username}</span>
           </div>
         </div>
         <div className="icons">
@@ -34,61 +43,7 @@ const handleEmoji = (e) =>{
         </div>
       </div>
       <div className="center">
-      <div className="message">
-        <img src="./avatar.png" alt="" />
-        <div className="text">
-          <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptas, voluptate.</p>
-          <span>Just now</span>
-        </div>
-
-      </div>
-      <div className="message  own">
-        <div className="text">
-          <img src="https://wallpapercave.com/fwp-255/wp16170847.jpg" alt="" />
-          <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptas, voluptate.</p>
-          <span>Just now</span>
-        </div>
-
-      </div>
-      <div className="message">
-        <img src="./avatar.png" alt="" />
-        <div className="text">
-          <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptas, voluptate.</p>
-          <span>Just now</span>
-        </div>
-
-      </div>
-      <div className="message  own">
-        <div className="text">
-          <img src="https://wallpapercave.com/fwp-255/wp16170847.jpg" alt="" />
-          <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptas, voluptate.</p>
-          <span>Just now</span>
-        </div>
-
-      </div>
-      <div className="message">
-        <img src="./avatar.png" alt="" />
-        <div className="text">
-          <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptas, voluptate.</p>
-          <span>Just now</span>
-        </div>
-
-      </div>
-      <div className="message  own">
-        <div className="text">
-          <img src="https://wallpapercave.com/fwp-255/wp16170847.jpg" alt="" />
-          <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptas, voluptate.</p>
-          <span>Just now</span>
-        </div>
-
-      </div>
-      <div className="message">
-        <img src="./avatar.png" alt="" />
-        <div className="text">
-          <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptas, voluptate.</p>
-          <span>Just now</span>
-        </div>
-       </div>
+        <p className="noMessages">No messages yet. Say hello to {user.username}!</p>
        <div ref={endRef}></div>
       </div>
       <div className="bottom">

@@ -4,22 +4,24 @@ A realtime chat app built with React, Vite and Firebase, following the Lama Dev 
 
 ## Status
 
-Accounts work: you can sign up (with an optional profile picture), sign in, stay signed in across reloads, and log out. The chat screen itself still shows placeholder content.
+Accounts work, and you can find other users and start a chat with them. Sending messages is not built yet.
 
 What works today:
 
 1. Sign up, sign in and logout with Firebase Authentication
 2. User profiles saved in Firestore and profile pictures in Cloud Storage
 3. Your name and picture shown at the top of the chat list
-4. Three panel layout: chat list, conversation and user details
-5. Emoji picker in the message box
+4. Finding people by username with the + button and starting a chat with them
+5. Your chat list, updated live and filterable with the search box
+6. Opening a chat shows the other person in the middle and right panels
+7. Emoji picker in the message box
 
 Still to do:
 
-1. Searching for users and starting a chat
-2. Real chat list and messages from Firestore
-3. Sending messages and images
-4. Block user
+1. Sending and showing messages
+2. Sending images
+3. Block user
+4. Real shared photos in the right panel
 
 ## Running locally
 
@@ -63,9 +65,12 @@ Emulator data is wiped when the emulators stop.
 
 ## Data
 
-1. `users/{uid}`: profile with `id`, `username`, `avatar` (image URL, empty for the default picture) and `blocked` (list of user ids)
-2. `userchats/{uid}`: `chats`, the list of chats the user is in
-3. Storage `avatars/{uid}/...`: profile pictures
+1. `users/{uid}`: profile with `id`, `username`, `usernameLower` (for search), `avatar` (image URL, empty for the default picture) and `blocked` (list of user ids)
+2. `chats/{chatId}`: a chat between two people, with `members` (their two user ids) and `createdAt`. The chat id is the two user ids sorted and joined with `_`, so two people always share one chat.
+3. `userchats/{uid}/chats/{chatId}`: one entry per chat in a user's chat list, with `chatId`, `receiverId` (the other person), `lastMessage`, `updatedAt` and `isSeen`
+4. Storage `avatars/{uid}/...`: profile pictures
+
+The security rules only let chat members read a chat, and only let someone add a chat to another person's list if they are both members of it.
 
 ## Project layout
 
@@ -76,10 +81,12 @@ src/
     firebase.js           Firebase setup (reads .env.local)
     upload.js             uploads a file to Cloud Storage
     userStore.js          the signed in user's profile
+    chatStore.js          the chat that is open
+    chats.js              starting a chat between two users
   components/
     login/                sign in and sign up screen
     notification/         toast messages
-    list/                 left panel: your profile and chat list
+    list/                 left panel: your profile, chat list and the add user popup
     chat/                 middle panel: messages and message box
     detail/               right panel: contact details and shared files
 public/                   icons and background image

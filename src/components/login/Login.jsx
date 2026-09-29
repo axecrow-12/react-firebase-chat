@@ -84,14 +84,11 @@ const Login = () => {
         ? await upload(avatar.file, `avatars/${newUser.uid}/${Date.now()}_${avatar.file.name}`)
         : ""
 
-      // Write the chat list first: App treats the users document as the
-      // signal that the account is ready.
-      await setDoc(doc(db, "userchats", newUser.uid), {
-        chats: []
-      })
       await setDoc(doc(db, "users", newUser.uid), {
         id: newUser.uid,
         username: username.trim(),
+        // Lowercase copy so search can ignore case.
+        usernameLower: username.trim().toLowerCase(),
         avatar: avatarUrl,
         blocked: []
       })

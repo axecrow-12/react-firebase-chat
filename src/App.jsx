@@ -8,6 +8,7 @@ import Login from "./components/login/Login"
 import Notification from "./components/notification/Notification"
 import { auth, db, isFirebaseConfigured } from "./lib/firebase"
 import { useUserStore } from "./lib/userStore"
+import { useChatStore } from "./lib/chatStore"
 
 const App = () => {
   const { currentUser, isLoading, setCurrentUser } = useUserStore()
@@ -21,6 +22,7 @@ const App = () => {
       unsubscribeProfile()
       if (!user) {
         unsubscribeProfile = () => {}
+        useChatStore.getState().resetChat()
         setCurrentUser(null)
         return
       }

@@ -1,0 +1,19 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Profiles: any signed in user can read them (needed to find people to
+    // chat with); only the owner can create or change their own.
+    match /users/{userId} {
+      allow read: if request.auth != null;
+      allow create, update: if request.auth != null && request.auth.uid == userId;
+    }
+
+    // Each user's list of chats. Only the owner for now; this will need to
+    // widen once sending a message updates the other person's list too.
+    match /userchats/{userId} {
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+    }
+  }
+}
